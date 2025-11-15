@@ -32,7 +32,7 @@ export function AdvancedVoiceRecorder({
   onRecordingComplete,
   continuous = false,
 }: AdvancedVoiceRecorderProps) {
-  const theme = useTheme();
+  const { theme } = useTheme();
   
   const [recording, setRecording] = React.useState<Audio.Recording | null>(null);
   const [isRecording, setIsRecording] = React.useState(false);
@@ -460,7 +460,7 @@ const styles = StyleSheet.create({
     padding: Spacing.xs,
   },
   title: {
-    fontSize: Typography.subtitle.fontSize,
+    fontSize: Typography.h4.fontSize,
     fontWeight: '600',
   },
   content: {

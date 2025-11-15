@@ -26,7 +26,7 @@ interface SummaryModalProps {
 }
 
 export function SummaryModal({ visible, session, onClose }: SummaryModalProps) {
-  const theme = useTheme();
+  const { theme } = useTheme();
   const [insights, setInsights] = React.useState<ConversationInsights | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [flowAnalysis, setFlowAnalysis] = React.useState<any>(null);
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
     padding: Spacing.xs,
   },
   title: {
-    fontSize: Typography.title.fontSize,
+    fontSize: Typography.h2.fontSize,
     fontWeight: '600',
   },
   content: {
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
   sectionTitle: {
-    fontSize: Typography.subtitle.fontSize,
+    fontSize: Typography.h4.fontSize,
     fontWeight: '600',
   },
   summaryText: {
@@ -348,7 +348,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   statValue: {
-    fontSize: Typography.title.fontSize,
+    fontSize: Typography.h2.fontSize,
     fontWeight: '600',
     marginBottom: Spacing.xs,
   },

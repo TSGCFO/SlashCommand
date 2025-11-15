@@ -14,7 +14,7 @@ import { useTheme } from '../hooks/useTheme';
 import { OfflineQueueService, SyncStatus } from '../utils/offlineQueue';
 
 export function OfflineIndicator() {
-  const theme = useTheme();
+  const { theme } = useTheme();
   const [syncStatus, setSyncStatus] = React.useState<SyncStatus | null>(null);
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
   const pulseAnim = React.useRef(new Animated.Value(1)).current;
