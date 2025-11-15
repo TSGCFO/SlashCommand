@@ -5,26 +5,52 @@ const tintColorDark = "#0A84FF";
 
 export const Colors = {
   light: {
-    text: "#11181C",
+    text: "#000000",
+    textSecondary: "#8E8E93",
     buttonText: "#FFFFFF",
     tabIconDefault: "#687076",
     tabIconSelected: tintColorLight,
     link: "#007AFF",
+    primary: "#007AFF",
     backgroundRoot: "#FFFFFF", // Elevation 0
-    backgroundDefault: "#F2F2F2", // Elevation 1
-    backgroundSecondary: "#E6E6E6", // Elevation 2
+    backgroundDefault: "#F2F2F7", // Elevation 1
+    backgroundSecondary: "#E9E9EB", // Elevation 2
     backgroundTertiary: "#D9D9D9", // Elevation 3
+    surface: "#F2F2F7",
+    userBubble: "#007AFF",
+    aiBubble: "#E9E9EB",
+    userBubbleText: "#FFFFFF",
+    aiBubbleText: "#000000",
+    border: "#C6C6C8",
+    error: "#FF3B30",
+    success: "#34C759",
+    inputBackground: "#F2F2F7",
+    drawerBackground: "#FFFFFF",
+    drawerHeaderBackground: "#F2F2F7",
   },
   dark: {
-    text: "#ECEDEE",
+    text: "#FFFFFF",
+    textSecondary: "#8E8E93",
     buttonText: "#FFFFFF",
     tabIconDefault: "#9BA1A6",
     tabIconSelected: tintColorDark,
     link: "#0A84FF",
-    backgroundRoot: "#1F2123", // Elevation 0
-    backgroundDefault: "#2A2C2E", // Elevation 1
-    backgroundSecondary: "#353739", // Elevation 2
+    primary: "#0A84FF",
+    backgroundRoot: "#000000", // Elevation 0
+    backgroundDefault: "#1C1C1E", // Elevation 1
+    backgroundSecondary: "#2C2C2E", // Elevation 2
     backgroundTertiary: "#404244", // Elevation 3
+    surface: "#1C1C1E",
+    userBubble: "#0A84FF",
+    aiBubble: "#2C2C2E",
+    userBubbleText: "#FFFFFF",
+    aiBubbleText: "#FFFFFF",
+    border: "#38383A",
+    error: "#FF453A",
+    success: "#32D74B",
+    inputBackground: "#1C1C1E",
+    drawerBackground: "#000000",
+    drawerHeaderBackground: "#1C1C1E",
   },
 };
 
