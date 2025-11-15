@@ -17,6 +17,7 @@ import { ThemedText } from '../components/ThemedText';
 import ChatScreen from '../screens/ChatScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import { StorageService, Session } from '../utils/storage';
+import { VectorDatabase } from '../utils/vectordb';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -40,7 +41,11 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
   }, []);
 
   React.useEffect(() => {
-    if (searchText) {
+    if (searchText && searchText.length > 2) {
+      // Perform semantic search for longer queries
+      performSemanticSearch();
+    } else if (searchText) {
+      // Simple text filter for short queries
       const filtered = sessions.filter(s => 
         s.title.toLowerCase().includes(searchText.toLowerCase()) ||
         s.messages.some(m => m.content.toLowerCase().includes(searchText.toLowerCase()))
@@ -51,9 +56,42 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
     }
   }, [searchText, sessions]);
 
+  const performSemanticSearch = async () => {
+    try {
+      const results = await VectorDatabase.search(searchText, 10);
+      if (results.length > 0) {
+        // Filter sessions based on semantic search results
+        const matchedSessionIds = new Set(results.map(r => r.sessionId));
+        const filtered = sessions.filter(s => matchedSessionIds.has(s.id));
+        setFilteredSessions(filtered);
+      } else {
+        // Fall back to simple search
+        const filtered = sessions.filter(s => 
+          s.title.toLowerCase().includes(searchText.toLowerCase()) ||
+          s.messages.some(m => m.content.toLowerCase().includes(searchText.toLowerCase()))
+        );
+        setFilteredSessions(filtered);
+      }
+    } catch (error) {
+      console.error('Semantic search error:', error);
+      // Fall back to simple search
+      const filtered = sessions.filter(s => 
+        s.title.toLowerCase().includes(searchText.toLowerCase()) ||
+        s.messages.some(m => m.content.toLowerCase().includes(searchText.toLowerCase()))
+      );
+      setFilteredSessions(filtered);
+    }
+  };
+
   const loadSessions = async () => {
     const loadedSessions = await StorageService.getSessions();
     setSessions(loadedSessions);
+    
+    // Initialize vector database and index all sessions
+    await VectorDatabase.initialize();
+    for (const session of loadedSessions) {
+      await VectorDatabase.indexSession(session);
+    }
   };
 
   const loadUserName = async () => {

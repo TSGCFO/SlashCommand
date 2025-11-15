@@ -49,6 +49,30 @@ export class OpenAIService {
     }
   }
 
+  async createEmbedding(text: string): Promise<number[]> {
+    // For now, return a mock embedding since we need actual OpenAI API for real embeddings
+    // In production, this would use: await this.client.embeddings.create({ model: 'text-embedding-3-small', input: text })
+    
+    // Create a deterministic mock embedding based on text content
+    const mockEmbedding: number[] = [];
+    const words = text.toLowerCase().split(/\s+/);
+    
+    // Generate 256-dimensional mock embedding
+    for (let i = 0; i < 256; i++) {
+      let value = 0;
+      for (let j = 0; j < words.length; j++) {
+        const word = words[j];
+        if (word.length > 0) {
+          const charCode = word.charCodeAt(j % word.length);
+          value += Math.sin(charCode * (i + 1)) * 0.1;
+        }
+      }
+      mockEmbedding.push(Math.tanh(value));
+    }
+    
+    return mockEmbedding;
+  }
+
   async transcribeAudio(audioUri: string): Promise<string> {
     try {
       const formData = new FormData();

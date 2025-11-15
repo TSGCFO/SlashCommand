@@ -23,11 +23,14 @@ import { ThemedView } from '../components/ThemedView';
 import { ThemedText } from '../components/ThemedText';
 import { MessageBubble } from '../components/MessageBubble';
 import { VoiceRecorder } from '../components/VoiceRecorder';
+import { SummaryModal } from '../components/SummaryModal';
+import { OfflineIndicator } from '../components/OfflineIndicator';
 import { Colors, Spacing, BorderRadius, Typography } from '../constants/theme';
 import { useTheme } from '../hooks/useTheme';
 import { useScreenInsets } from '../hooks/useScreenInsets';
 import { StorageService, Message, Session } from '../utils/storage';
 import { getOpenAI, initOpenAI } from '../utils/openai';
+import { ExportService } from '../utils/export';
 
 export default function ChatScreen({ route }: any) {
   const theme = useTheme();
@@ -43,6 +46,7 @@ export default function ChatScreen({ route }: any) {
   const [refreshing, setRefreshing] = React.useState(false);
   const [apiKeyError, setApiKeyError] = React.useState(false);
   const [streamingMessage, setStreamingMessage] = React.useState('');
+  const [showSummary, setShowSummary] = React.useState(false);
   
   const flatListRef = React.useRef<FlatList>(null);
 
@@ -120,6 +124,18 @@ export default function ChatScreen({ route }: any) {
       '',
       [
         {
+          text: 'View Insights',
+          onPress: () => setShowSummary(true),
+        },
+        {
+          text: 'Export Chat',
+          onPress: showExportOptions,
+        },
+        {
+          text: 'Share Summary',
+          onPress: shareSummary,
+        },
+        {
           text: 'Clear Chat',
           onPress: clearChat,
           style: 'destructive',
@@ -134,6 +150,54 @@ export default function ChatScreen({ route }: any) {
         },
       ]
     );
+  };
+
+  const showExportOptions = () => {
+    Alert.alert(
+      'Export Conversation',
+      'Choose export format',
+      [
+        {
+          text: 'Text File',
+          onPress: async () => {
+            if (session) {
+              await ExportService.exportAsText(session);
+              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            }
+          },
+        },
+        {
+          text: 'Markdown',
+          onPress: async () => {
+            if (session) {
+              await ExportService.exportAsMarkdown(session);
+              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            }
+          },
+        },
+        {
+          text: 'JSON',
+          onPress: async () => {
+            if (session) {
+              await ExportService.exportAsJSON(session);
+              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            }
+          },
+        },
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+      ]
+    );
+  };
+
+  const shareSummary = async () => {
+    if (session) {
+      const summary = ExportService.generateShareableSummary(session);
+      await ExportService.shareText(summary, 'Share Conversation Summary');
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
   };
 
   const clearChat = async () => {
@@ -409,6 +473,14 @@ export default function ChatScreen({ route }: any) {
         onClose={() => setShowVoiceRecorder(false)}
         onRecordingComplete={handleVoiceRecording}
       />
+      
+      <SummaryModal
+        visible={showSummary}
+        session={session}
+        onClose={() => setShowSummary(false)}
+      />
+      
+      <OfflineIndicator />
     </KeyboardAvoidingView>
   );
 }
