@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { Feather } from '@expo/vector-icons';
+import { Feather, Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedView } from '../components/ThemedView';
@@ -38,7 +38,7 @@ export default function SettingsScreen() {
       headerTitle: 'Settings',
       headerLeft: () => (
         <Pressable onPress={() => navigation.goBack()} style={styles.headerButton}>
-          <Feather name="arrow-left" size={24} color={theme.text} />
+          <Ionicons name="arrow-back" size={24} color={theme.text} />
         </Pressable>
       ),
       headerTransparent: false,
@@ -174,14 +174,14 @@ export default function SettingsScreen() {
                   onPress={() => setSpeechRate(Math.max(0.5, speechRate - 0.25))}
                   style={styles.speedButton}
                 >
-                  <Feather name="minus" size={20} color={theme.text} />
+                  <Ionicons name="remove" size={20} color={theme.text} />
                 </Pressable>
                 <ThemedText style={styles.speedText}>{speechRate.toFixed(2)}x</ThemedText>
                 <Pressable
                   onPress={() => setSpeechRate(Math.min(2.0, speechRate + 0.25))}
                   style={styles.speedButton}
                 >
-                  <Feather name="plus" size={20} color={theme.text} />
+                  <Ionicons name="add" size={20} color={theme.text} />
                 </Pressable>
               </View>
             </View>

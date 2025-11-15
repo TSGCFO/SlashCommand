@@ -7,7 +7,7 @@ import {
 } from '@react-navigation/drawer';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Feather } from '@expo/vector-icons';
+import { Feather, Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { v4 as uuidv4 } from 'uuid';
 import { Colors, Spacing, BorderRadius, Typography } from '../constants/theme';
@@ -159,7 +159,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
         onPress={() => deleteSession(session.id)}
         style={styles.deleteButton}
       >
-        <Feather name="trash-2" size={16} color={theme.error} />
+        <Ionicons name="trash-outline" size={16} color={theme.error} />
       </Pressable>
     </Pressable>
   );
@@ -174,13 +174,13 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
         />
         <ThemedText style={styles.userName}>{userName}</ThemedText>
         <Pressable style={styles.settingsButton} onPress={navigateToSettings}>
-          <Feather name="settings" size={20} color={theme.text} />
+          <Ionicons name="settings-outline" size={20} color={theme.text} />
         </Pressable>
       </View>
 
       {/* Search Bar */}
       <View style={styles.searchContainer}>
-        <Feather name="search" size={16} color={theme.textSecondary} style={styles.searchIcon} />
+        <Ionicons name="search" size={16} color={theme.textSecondary} style={styles.searchIcon} />
         <TextInput
           value={searchText}
           onChangeText={setSearchText}
@@ -203,7 +203,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
 
       {/* New Chat FAB */}
       <Pressable style={[styles.newChatButton, { backgroundColor: theme.primary }]} onPress={createNewSession}>
-        <Feather name="plus" size={24} color="#FFFFFF" />
+        <Ionicons name="add" size={24} color="#FFFFFF" />
       </Pressable>
     </ThemedView>
   );

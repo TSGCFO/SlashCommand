@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, DrawerActions } from '@react-navigation/native';
-import { Feather } from '@expo/vector-icons';
+import { Feather, Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import * as Speech from 'expo-speech';
 import { v4 as uuidv4 } from 'uuid';
@@ -66,16 +66,16 @@ export default function ChatScreen({ route }: any) {
           onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
           style={styles.headerButton}
         >
-          <Feather name="menu" size={24} color={theme.text} />
+          <Ionicons name="menu" size={24} color={theme.text} />
         </Pressable>
       ),
       headerRight: () => (
         <View style={styles.headerRight}>
           <Pressable onPress={() => setShowVoiceRecorder(true)} style={styles.headerButton}>
-            <Feather name="mic" size={22} color={theme.text} />
+            <Ionicons name="mic-outline" size={22} color={theme.text} />
           </Pressable>
           <Pressable onPress={showMenu} style={styles.headerButton}>
-            <Feather name="more-vertical" size={22} color={theme.text} />
+            <Ionicons name="ellipsis-vertical" size={22} color={theme.text} />
           </Pressable>
         </View>
       ),
@@ -449,14 +449,14 @@ export default function ChatScreen({ route }: any) {
                   onPressIn={() => setShowVoiceRecorder(true)}
                   style={styles.voiceButton}
                 >
-                  <Feather name="mic" size={20} color={theme.primary} />
+                  <Ionicons name="mic-outline" size={20} color={theme.primary} />
                 </Pressable>
                 <Pressable
                   onPress={() => sendMessage(inputText)}
                   disabled={!inputText.trim()}
                   style={styles.sendButton}
                 >
-                  <Feather 
+                  <Ionicons 
                     name="send" 
                     size={20} 
                     color={inputText.trim() ? theme.primary : theme.textSecondary} 
