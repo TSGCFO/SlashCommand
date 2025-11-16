@@ -28,7 +28,7 @@ type DrawerParamList = {
 };
 
 function CustomDrawerContent(props: DrawerContentComponentProps) {
-  const theme = useTheme();
+  const { theme } = useTheme();
   const insets = useSafeAreaInsets();
   const [searchText, setSearchText] = React.useState('');
   const [sessions, setSessions] = React.useState<Session[]>([]);
@@ -210,7 +210,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
 }
 
 function ChatNavigator() {
-  const theme = useTheme();
+  const { theme } = useTheme();
   
   return (
     <Stack.Navigator

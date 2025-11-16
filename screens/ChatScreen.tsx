@@ -370,7 +370,7 @@ export default function ChatScreen({ route }: any) {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={0}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
     >
       <ThemedView style={[styles.container, { paddingTop: screenInsets.paddingTop }]}>
         {messages.length === 0 && !streamingMessage ? (
@@ -401,16 +401,15 @@ export default function ChatScreen({ route }: any) {
           />
         )}
 
-        <View style={[styles.inputContainer, { paddingBottom: insets.bottom + Spacing.md }]}>
+        <View style={[styles.inputContainer, { paddingBottom: Math.max(insets.bottom, 20) }]}>
           <View style={[styles.inputWrapper, { backgroundColor: theme.inputBackground }]}>
             <TextInput
               value={inputText}
               onChangeText={setInputText}
               placeholder="Type a message..."
               placeholderTextColor={theme.textSecondary}
-              style={[styles.textInput, { color: theme.text }]}
+              style={[styles.textInput, { color: theme.text, maxHeight: 120 }]}
               multiline
-              maxHeight={120}
               editable={!isLoading}
             />
             {isLoading ? (
