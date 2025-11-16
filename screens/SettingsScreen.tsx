@@ -22,7 +22,7 @@ import { StorageService } from '../utils/storage';
 import { isOpenAIInitialized } from '../utils/openai';
 
 export default function SettingsScreen() {
-  const theme = useTheme();
+  const { theme } = useTheme();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   

@@ -33,7 +33,7 @@ import { getOpenAI } from '../utils/openai';
 import { ExportService } from '../utils/export';
 
 export default function ChatScreen({ route }: any) {
-  const theme = useTheme();
+  const { theme } = useTheme();
   const insets = useSafeAreaInsets();
   const screenInsets = useScreenInsets();
   const navigation = useNavigation();
