@@ -131,7 +131,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
   };
 
   const navigateToSettings = () => {
-    props.navigation.navigate('Settings' as never);
+    props.navigation.navigate('Chat', { screen: 'Settings' });
     props.navigation.closeDrawer();
   };
 
