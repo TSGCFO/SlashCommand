@@ -352,17 +352,6 @@ export default function ChatScreen({ route }: any) {
     />
   );
 
-  const renderEmpty = () => (
-    <View style={styles.emptyContainer}>
-      <Image
-        source={require('../assets/images/empty-chat.png')}
-        style={styles.emptyImage}
-        resizeMode="contain"
-      />
-      <ThemedText style={styles.emptyText}>Start a conversation</ThemedText>
-    </View>
-  );
-
   const renderStreamingMessage = () => {
     if (!streamingMessage) return null;
 
@@ -384,21 +373,33 @@ export default function ChatScreen({ route }: any) {
       keyboardVerticalOffset={0}
     >
       <ThemedView style={[styles.container, { paddingTop: screenInsets.paddingTop }]}>
-        <FlatList
-          ref={flatListRef}
-          data={messages}
-          renderItem={renderMessage}
-          keyExtractor={(item) => item.id}
-          inverted
-          contentContainerStyle={styles.messagesList}
-          ListEmptyComponent={renderEmpty}
-          ListFooterComponent={renderStreamingMessage}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-          onContentSizeChange={() => flatListRef.current?.scrollToEnd()}
-        />
+        {messages.length === 0 && !streamingMessage ? (
+          // Show empty state when no messages
+          <View style={styles.emptyStateWrapper}>
+            <Image
+              source={require('../assets/images/empty-chat.png')}
+              style={styles.emptyImage}
+              resizeMode="contain"
+            />
+            <ThemedText style={styles.emptyText}>Start a conversation</ThemedText>
+          </View>
+        ) : (
+          // Show messages list when there are messages
+          <FlatList
+            ref={flatListRef}
+            data={messages}
+            renderItem={renderMessage}
+            keyExtractor={(item) => item.id}
+            inverted
+            contentContainerStyle={styles.messagesList}
+            ListFooterComponent={renderStreamingMessage}
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+            onContentSizeChange={() => flatListRef.current?.scrollToEnd()}
+          />
+        )}
 
         <View style={[styles.inputContainer, { paddingBottom: insets.bottom + Spacing.md }]}>
           <View style={[styles.inputWrapper, { backgroundColor: theme.inputBackground }]}>
@@ -471,11 +472,11 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingVertical: Spacing.lg,
   },
-  emptyContainer: {
+  emptyStateWrapper: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 100,
+    paddingBottom: 100,
   },
   emptyImage: {
     width: 150,
