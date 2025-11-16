@@ -169,14 +169,32 @@ export class OpenAIService {
 // Singleton instance
 let openAIInstance: OpenAIService | null = null;
 
+// Auto-initialize with environment variable if available
+if (process.env.OPENAI_API_KEY) {
+  console.log('OpenAI API key loaded from environment variable');
+  openAIInstance = new OpenAIService({ apiKey: process.env.OPENAI_API_KEY });
+}
+
 export const initOpenAI = (apiKey: string) => {
   openAIInstance = new OpenAIService({ apiKey });
   return openAIInstance;
 };
 
 export const getOpenAI = (): OpenAIService => {
-  if (!openAIInstance) {
-    throw new Error('OpenAI not initialized. Please set your API key in settings.');
+  // First check if already initialized (from env var or manual init)
+  if (openAIInstance) {
+    return openAIInstance;
   }
-  return openAIInstance;
+  
+  // Try to initialize from environment variable
+  if (process.env.OPENAI_API_KEY) {
+    openAIInstance = new OpenAIService({ apiKey: process.env.OPENAI_API_KEY });
+    return openAIInstance;
+  }
+  
+  throw new Error('OpenAI not initialized. Please set your API key in settings.');
+};
+
+export const isOpenAIInitialized = (): boolean => {
+  return openAIInstance !== null || !!process.env.OPENAI_API_KEY;
 };

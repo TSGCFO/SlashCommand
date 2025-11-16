@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, DrawerActions } from '@react-navigation/native';
-import { Feather, Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import * as Speech from 'expo-speech';
 import { v4 as uuidv4 } from 'uuid';
@@ -29,7 +29,7 @@ import { Colors, Spacing, BorderRadius, Typography } from '../constants/theme';
 import { useTheme } from '../hooks/useTheme';
 import { useScreenInsets } from '../hooks/useScreenInsets';
 import { StorageService, Message, Session } from '../utils/storage';
-import { getOpenAI, initOpenAI } from '../utils/openai';
+import { getOpenAI } from '../utils/openai';
 import { ExportService } from '../utils/export';
 
 export default function ChatScreen({ route }: any) {
@@ -44,7 +44,6 @@ export default function ChatScreen({ route }: any) {
   const [isLoading, setIsLoading] = React.useState(false);
   const [showVoiceRecorder, setShowVoiceRecorder] = React.useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
-  const [apiKeyError, setApiKeyError] = React.useState(false);
   const [streamingMessage, setStreamingMessage] = React.useState('');
   const [showSummary, setShowSummary] = React.useState(false);
   
@@ -53,7 +52,6 @@ export default function ChatScreen({ route }: any) {
   // Initialize session
   React.useEffect(() => {
     loadOrCreateSession();
-    checkApiKey();
   }, [route?.params?.sessionId]);
 
   React.useLayoutEffect(() => {
@@ -82,15 +80,6 @@ export default function ChatScreen({ route }: any) {
     });
   }, [navigation, session, theme]);
 
-  const checkApiKey = async () => {
-    const prefs = await StorageService.getPreferences();
-    if (!prefs.openAIKey) {
-      setApiKeyError(true);
-    } else {
-      initOpenAI(prefs.openAIKey);
-      setApiKeyError(false);
-    }
-  };
 
   const loadOrCreateSession = async () => {
     const sessionId = route?.params?.sessionId;
@@ -227,7 +216,7 @@ export default function ChatScreen({ route }: any) {
   };
 
   const sendMessage = async (content: string, isVoice: boolean = false) => {
-    if (!content.trim() || apiKeyError) return;
+    if (!content.trim()) return;
 
     const userMessage: Message = {
       id: uuidv4(),
@@ -387,24 +376,6 @@ export default function ChatScreen({ route }: any) {
     return <MessageBubble message={tempMessage} />;
   };
 
-  if (apiKeyError) {
-    return (
-      <ThemedView style={[styles.container, { paddingTop: screenInsets.paddingTop }]}>
-        <View style={styles.apiKeyError}>
-          <Feather name="alert-circle" size={48} color={theme.error} />
-          <ThemedText style={styles.apiKeyErrorText}>
-            Please set your OpenAI API key in Settings to start chatting
-          </ThemedText>
-          <Pressable
-            style={[styles.settingsButton, { backgroundColor: theme.primary }]}
-            onPress={() => navigation.navigate('Settings' as never)}
-          >
-            <ThemedText style={{ color: '#FFFFFF' }}>Go to Settings</ThemedText>
-          </Pressable>
-        </View>
-      </ThemedView>
-    );
-  }
 
   return (
     <KeyboardAvoidingView
@@ -543,22 +514,5 @@ const styles = StyleSheet.create({
   sendButton: {
     padding: Spacing.sm,
     marginLeft: Spacing.xs,
-  },
-  apiKeyError: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: Spacing['4xl'],
-  },
-  apiKeyErrorText: {
-    fontSize: Typography.body.fontSize,
-    textAlign: 'center',
-    marginTop: Spacing.xl,
-    marginBottom: Spacing['2xl'],
-  },
-  settingsButton: {
-    paddingHorizontal: Spacing['2xl'],
-    paddingVertical: Spacing.md,
-    borderRadius: BorderRadius.sm,
   },
 });
