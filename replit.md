@@ -4,6 +4,19 @@
 
 This is a cross-platform AI chat application built with React Native and Expo. The app provides a conversational interface with OpenAI's GPT models, featuring voice recording, conversation management, offline support, semantic search capabilities, AI-powered summarization, and advanced export functionality. It's designed as a single-user utility application with local data persistence and no authentication requirements.
 
+## Recent Changes (November 16, 2025)
+
+### Critical UI Rendering Fixes
+1. **Font Loading Issue**: Fixed icons showing as Chinese characters/boxes in Expo Go by adding `useFonts` hook in App.tsx to load Ionicons and Feather fonts before rendering
+2. **Environment Variable Access**: Replaced broken `process.env` usage with Expo Constants by:
+   - Converting app.json to app.config.js for dynamic configuration
+   - Creating config service (utils/config.ts) for centralized environment variable access
+   - Updating OpenAI service to use config service
+3. **Inverted List Empty State**: Fixed upside-down empty state in ChatScreen by conditionally rendering outside inverted FlatList
+4. **Theme Destructuring**: Fixed inconsistent theme usage across ChatScreen, SettingsScreen, and DrawerNavigator
+5. **Safe Area Layout**: Fixed keyboard offset and padding issues for proper input field positioning
+6. **Package Updates**: Updated expo-glass-effect and react-native-svg to match Expo SDK 54 requirements
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
