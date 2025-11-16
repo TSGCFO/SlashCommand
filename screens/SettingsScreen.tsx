@@ -19,7 +19,7 @@ import { ThemedText } from '../components/ThemedText';
 import { Colors, Spacing, BorderRadius, Typography } from '../constants/theme';
 import { useTheme } from '../hooks/useTheme';
 import { StorageService } from '../utils/storage';
-import { initOpenAI } from '../utils/openai';
+import { isOpenAIInitialized } from '../utils/openai';
 
 export default function SettingsScreen() {
   const theme = useTheme();
@@ -27,11 +27,11 @@ export default function SettingsScreen() {
   const navigation = useNavigation();
   
   const [userName, setUserName] = React.useState('User');
-  const [apiKey, setApiKey] = React.useState('');
   const [hapticFeedback, setHapticFeedback] = React.useState(true);
   const [autoPlayTTS, setAutoPlayTTS] = React.useState(false);
   const [speechRate, setSpeechRate] = React.useState(1.0);
   const [isDarkMode, setIsDarkMode] = React.useState(false);
+  const [isApiKeyConfigured, setIsApiKeyConfigured] = React.useState(false);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -50,12 +50,13 @@ export default function SettingsScreen() {
 
   React.useEffect(() => {
     loadPreferences();
+    // Check if API key is configured via environment variable
+    setIsApiKeyConfigured(isOpenAIInitialized());
   }, []);
 
   const loadPreferences = async () => {
     const prefs = await StorageService.getPreferences();
     setUserName(prefs.userName || 'User');
-    setApiKey(prefs.openAIKey || '');
     setHapticFeedback(prefs.hapticFeedback !== false);
     setAutoPlayTTS(prefs.autoPlayTTS || false);
     setSpeechRate(prefs.speechRate || 1.0);
@@ -65,7 +66,6 @@ export default function SettingsScreen() {
   const savePreferences = async () => {
     const prefs = {
       userName,
-      openAIKey: apiKey,
       hapticFeedback,
       autoPlayTTS,
       speechRate,
@@ -73,10 +73,6 @@ export default function SettingsScreen() {
     };
     
     await StorageService.savePreferences(prefs);
-    
-    if (apiKey) {
-      initOpenAI(apiKey);
-    }
     
     if (hapticFeedback) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -137,17 +133,25 @@ export default function SettingsScreen() {
         <View style={styles.section}>
           <ThemedText style={styles.sectionTitle}>API Configuration</ThemedText>
           <View style={[styles.card, { backgroundColor: theme.surface }]}>
-            <ThemedText style={styles.label}>OpenAI API Key</ThemedText>
-            <TextInput
-              value={apiKey}
-              onChangeText={setApiKey}
-              placeholder="sk-..."
-              placeholderTextColor={theme.textSecondary}
-              secureTextEntry
-              style={[styles.apiKeyInput, { color: theme.text, backgroundColor: theme.inputBackground }]}
-            />
+            <View style={styles.apiStatusRow}>
+              <View style={styles.apiStatusInfo}>
+                <ThemedText style={styles.label}>OpenAI API Key</ThemedText>
+                <ThemedText style={[styles.apiStatusText, { color: theme.textSecondary }]}>
+                  Configured via environment variables
+                </ThemedText>
+              </View>
+              <View style={[styles.statusIndicator, { backgroundColor: isApiKeyConfigured ? theme.success : theme.error }]}>
+                <Ionicons 
+                  name={isApiKeyConfigured ? "checkmark" : "close"} 
+                  size={16} 
+                  color="#FFFFFF" 
+                />
+              </View>
+            </View>
             <ThemedText style={[styles.hint, { color: theme.textSecondary }]}>
-              Your API key is stored locally and never shared
+              {isApiKeyConfigured 
+                ? 'API key is configured and ready to use' 
+                : 'API key not found in environment variables'}
             </ThemedText>
           </View>
         </View>
@@ -301,11 +305,24 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
     fontWeight: '500',
   },
-  apiKeyInput: {
-    fontSize: Typography.body.fontSize,
-    padding: Spacing.md,
-    borderRadius: BorderRadius.sm,
-    fontFamily: 'monospace',
+  apiStatusRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  apiStatusInfo: {
+    flex: 1,
+  },
+  apiStatusText: {
+    fontSize: Typography.small.fontSize,
+    marginTop: Spacing.xs,
+  },
+  statusIndicator: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   hint: {
     fontSize: Typography.small.fontSize - 1,
